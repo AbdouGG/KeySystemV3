@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { Shield } from 'lucide-react';
+import { Routes, Route } from 'react-router-dom';
 import { KeyDisplay } from './components/KeyDisplay';
 import { CheckpointButton } from './components/CheckpointButton';
+import { VerificationPage } from './components/VerificationPage';
 import { generateKey } from './utils/keyGeneration';
 import { getCheckpointUrl } from './utils/checkpointUrls';
 import { verifyCheckpoint } from './utils/checkpointVerification';
 import type { CheckpointStatus, Key } from './types';
 
-function App() {
+function MainPage() {
   const [checkpoints, setCheckpoints] = useState<CheckpointStatus>({
     checkpoint1: false,
     checkpoint2: false,
@@ -37,7 +39,7 @@ function App() {
 
   const handleLinkvertiseClick = async () => {
     const currentCheckpoint = getCurrentCheckpoint();
-    const checkpointUrl = getCheckpointUrl(currentCheckpoint);
+    const checkpointUrl = await getCheckpointUrl(currentCheckpoint);
     
     if (!checkpoints[`checkpoint${currentCheckpoint}` as keyof CheckpointStatus]) {
       window.open(checkpointUrl, '_blank');
@@ -127,6 +129,15 @@ function App() {
         )}
       </div>
     </div>
+  );
+}
+
+function App() {
+  return (
+    <Routes>
+      <Route path="/" element={<MainPage />} />
+      <Route path="/verify/:id" element={<VerificationPage />} />
+    </Routes>
   );
 }
 
